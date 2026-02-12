@@ -1,0 +1,15 @@
+[Unit]
+Description=Ashby BD Job Tracker Telegram Bot
+After=network.target
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=5
+User=ubuntu
+WorkingDirectory=/opt/job-bot
+EnvironmentFile=/opt/job-bot/.env
+ExecStart=/opt/job-bot/venv/bin/python /opt/job-bot/bot.py
+
+[Install]
+WantedBy=multi-user.target
