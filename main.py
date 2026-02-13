@@ -13,49 +13,22 @@ logging.basicConfig(
 )
 
 
-INCLUDE_KEYWORDS = {
+TITLE_KEYWORDS = (
     "engineer",
-    "engineering",
     "developer",
-    "software",
-    "backend",
-    "front end",
-    "frontend",
-    "full stack",
-    "fullstack",
-    "platform",
-    "infrastructure",
-    "devops",
-    "sre",
-    "data",
-    "machine learning",
-    "ml",
-    "ai",
-    "analytics",
+    "programmer",
+    "architect",
     "scientist",
     "analyst",
-}
-
-EXCLUDE_KEYWORDS = {
-    "sales",
-    "marketing",
-    "customer support",
-    "customer success",
-    "support",
-    "recruit",
-    "recruiting",
-    "talent",
-    "people",
-    "human resources",
-    "hr",
-    "finance",
-    "financial",
-    "legal",
-    "operations",
-    "ops",
-    "account executive",
-    "business development",
-}
+    "devops",
+    "sre",
+    "machine learning",
+    "ml",
+    "data",
+    "security",
+    "platform",
+    "infrastructure",
+)
 
 ASHBY_ENDPOINT_PATHS = (
     "/api/non-user-graphql?op=apiJobsBoardWithTeams",
@@ -174,26 +147,14 @@ def fetch_jobs_for_company(company: str, ashby_base_url: str) -> list[dict]:
 
 
 
-def contains_keyword(value: str, keywords: Iterable[str]) -> bool:
-    text = (value or "").lower()
-    return any(keyword in text for keyword in keywords)
+def title_matches_keywords(title: str, keywords: Iterable[str] = TITLE_KEYWORDS) -> bool:
+    normalized_title = (title or "").lower()
+    return any(keyword in normalized_title for keyword in keywords)
 
 
 
 def is_technical_job(job: dict) -> bool:
-    title = job.get("title", "")
-    team = job.get("team_name", "")
-    parent_team = job.get("parent_team_name", "")
-
-    stacked = " | ".join([title, team, parent_team]).lower()
-
-    if contains_keyword(stacked, EXCLUDE_KEYWORDS):
-        return False
-
-    if contains_keyword(stacked, INCLUDE_KEYWORDS):
-        return True
-
-    return False
+    return title_matches_keywords(job.get("title", ""))
 
 
 
